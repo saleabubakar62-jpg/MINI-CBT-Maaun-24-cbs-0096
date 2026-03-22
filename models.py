@@ -1,8 +1,23 @@
-class Business:
-    def __init__(self, name, category, location):
-        self.name = name
-        self.category = category
-        self.location = location
+from datetime import datetime
 
-    def get_info(self):
-        return f"{self.name} - {self.category} ({self.location})"
+class Question:
+    def __init__(self, text, options, answer):
+        self.text = text
+        self.options = options
+        self.answer = answer
+
+class Quiz:
+    def __init__(self):
+        self.questions = []
+        self.score = 0
+        self.submitted_time = None
+
+    def add_question(self, question):
+        self.questions.append(question)
+
+    def check_answer(self, user_answers):
+        for i in range(len(self.questions)):
+            if user_answers[i] == self.questions[i].answer:
+                self.score += 1
+
+        self.submitted_time = datetime.now()
