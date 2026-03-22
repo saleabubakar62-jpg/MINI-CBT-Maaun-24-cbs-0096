@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Business Directory</title>
+</head>
+
+<body>
+
+<h1>welcome to the Local Business Directory</h1>
+
+<a href="/add">Add New Business</a>
+
+<ul>
+{% for business in businesses %}
+    <li>{{ business.name }} - {{ business.category }} ({{ business.location }})</li>
+{% endfor %}
+</ul>
+
+</body>
+</html>
