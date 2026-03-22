@@ -1,22 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Local Business Directory</title>
-</head>
+Step 3 HTML FILE index. HTML 
+from flask import Flask, render_template, request
+from models import Question, Quiz
 
-<body>
+app = Flask(__name__)
 
-<h1>welcome to the Local Business Directory</h1>
+quiz = Quiz()
 
-<a href="/add">Add New Business</a>
+# Add sample questions
+quiz.add_question(Question("Capital of Nigeria?", ["Abuja", "Lagos", "Kano"], "Abuja"))
+quiz.add_question(Question("2 + 2?", ["3", "4", "5"], "4"))
 
-<ul>
-{% for business in businesses %}
-    <li>{{ business.name }} - {{ business.category }} ({{ business.location }})</li>
-{% endfor %}
-</ul>
+@app.route("/")
+def home():
+    return render_template("index.html")
 
-</body>
-</html>
+@app.route("/quiz")
+def quiz_page():
+    return render_template("quiz.html", questions=quiz.questions)
+
+@app.route("/submit", methods=["POST"])
+def submit():
+    answers = []
+    for i in range(len(quiz.questions)):
+        answers.append(request.form.get(f"q{i}"))
+
+    quiz.check_answer(answers)
+
+    return render_template("result.html",
+                           score=quiz.score,
+                           total=len(quiz.questions),
+                           time=quiz.submitted_time)
+
+if __name__ == "__main__":
+    app.run(debug=True)
