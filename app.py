@@ -1,29 +1,35 @@
-from flask import Flask, render_template, request, redirect
-from models import Business
+Step 2 app py (flask backend )
+from flask import Flask, render_template, request
+from models import Question, Quiz
 
-# Templates are stored under assigment4/templates in this workspace.
-# Configure Flask to locate them from that folder.
-app = Flask(__name__, template_folder="assigment4/templates")
+app = Flask(__name__)
 
-businesses = []
+quiz = Quiz()
 
-@app.route('/')
+# Add sample questions
+quiz.add_question(Question("Capital of Nigeria?", ["Abuja", "Lagos", "Kano"], "Abuja"))
+quiz.add_question(Question("2 + 2?", ["3", "4", "5"], "4"))
+
+@app.route("/")
 def home():
-    return render_template("index.html", businesses=businesses)
+    return render_template("index.html")
 
-@app.route('/add', methods=['GET', 'POST'])
-def add_business():
-    if request.method == 'POST':
-        name = request.form['name']
-        category = request.form['category']
-        location = request.form['location']
+@app.route("/quiz")
+def quiz_page():
+    return render_template("quiz.html", questions=quiz.questions)
 
-        new_business = Business(name, category, location)
-        businesses.append(new_business)
+@app.route("/submit", methods=["POST"])
+def submit():
+    answers = []
+    for i in range(len(quiz.questions)):
+        answers.append(request.form.get(f"q{i}"))
 
-        return redirect('/')
+    quiz.check_answer(answers)
 
-    return render_template("add_business.html")
+    return render_template("result.html",
+                           score=quiz.score,
+                           total=len(quiz.questions),
+                           time=quiz.submitted_time)
 
 if __name__ == "__main__":
     app.run(debug=True)
