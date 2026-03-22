@@ -1,4 +1,4 @@
-Step 2 app py (flask backend )
+
 from flask import Flask, render_template, request
 from models import Question, Quiz
 
